@@ -17,5 +17,5 @@ rsync -lptv planet.openstreetmap.org::planet/pbf/planet-$TODAY*.pbf* $WEB/pbf/
 rsync -lptv planet.openstreetmap.org::planet/pbf/planet-$LASTWEEK*.pbf* $WEB/pbf/
 
 #get bz2 files
-rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/
+#rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/
 #rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-$LASTWEEK*.bz2* $WEB/planet/
