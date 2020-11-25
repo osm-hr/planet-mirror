@@ -14,7 +14,11 @@ find $WEB/pbf -name "planet-*pbf*" -type f -mtime +30 -exec rm -f {} \;
 
 #get pbf files
 rsync -lptv planet.openstreetmap.org::planet/pbf/planet-$TODAY*.pbf* $WEB/pbf/
-rsync -lptv planet.openstreetmap.org::planet/pbf/planet-$LASTWEEK*.pbf* $WEB/pbf/
+if [ $TODAY != $LASTWEEK]
+then
+	rsync -lptv planet.openstreetmap.org::planet/pbf/planet-${LASTWEEK}2*.pbf* $WEB/pbf/
+	rsync -lptv planet.openstreetmap.org::planet/pbf/planet-${LASTWEEK}3*.pbf* $WEB/pbf/
+fi
 
 #get bz2 files
 #rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/
