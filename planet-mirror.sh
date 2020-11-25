@@ -10,7 +10,7 @@ WEB=/osm/planet-mirror/web
 
 #remove older than 32 days
 find $WEB/pbf -name "planet-*pbf*" -type f -mtime +32 -exec rm -f {} \;
-#find $WEB/planet -name "planet-*bz2*" -type f -mtime +32 -exec rm -f {} \;
+find $WEB/planet -name "planet-*bz2*" -type f -mtime +32 -exec rm -f {} \;
 
 #get pbf files
 rsync -lptv planet.openstreetmap.org::planet/pbf/planet-$TODAY*.pbf* $WEB/pbf/
@@ -22,5 +22,9 @@ then
 fi
 
 #get bz2 files
-#rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/
-#rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-$LASTWEEK*.bz2* $WEB/planet/
+#rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/$YEAR
+#if [ $TODAY != $LASTWEEK ]
+#then
+#	rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-${LASTWEEK}2*.bz2* $WEB/planet/$YEARLASTWEEK
+#	rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-${LASTWEEK}3*.bz2* $WEB/planet/$YEARLASTWEEK
+#fi
