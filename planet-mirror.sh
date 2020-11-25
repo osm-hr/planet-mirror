@@ -21,14 +21,16 @@ then
 	rsync -lptv planet.openstreetmap.org::planet/pbf/planet-${LASTWEEK}3*.pbf* $WEB/pbf/
 fi
 
-##get bz2 files
-#if [ ! -d $WEB/planet/$YEAR ]
-#then
-#	mkdir $WEB/planet/$YEAR
-#fi
-#rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/$YEAR
-#if [ $TODAY != $LASTWEEK ]
-#then
-#	rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-${LASTWEEK}2*.bz2* $WEB/planet/$YEARLASTWEEK
-#	rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-${LASTWEEK}3*.bz2* $WEB/planet/$YEARLASTWEEK
-#fi
+#get bz2 files
+#mkdir year folder if doesnt exist
+if [ ! -d $WEB/planet/$YEAR ]
+then
+	mkdir $WEB/planet/$YEAR
+fi
+rsync -lptv planet.openstreetmap.org::planet/planet/$YEAR/planet-$TODAY*.bz2* $WEB/planet/$YEAR
+# get bz from last week in case of month change
+if [ $TODAY != $LASTWEEK ]
+then
+	rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-${LASTWEEK}2*.bz2* $WEB/planet/$YEARLASTWEEK
+	rsync -lptv planet.openstreetmap.org::planet/planet/$YEARLASTWEEK/planet-${LASTWEEK}3*.bz2* $WEB/planet/$YEARLASTWEEK
+fi
