@@ -8,7 +8,7 @@ YEARLASTWEEK=$(date +"%Y" --date='7 days ago')
 
 WEB=/osm/planet-mirror/web
 
-#remove older than 30 days
+#remove older than 32 days
 find $WEB/pbf -name "planet-*pbf*" -type f -mtime +32 -exec rm -f {} \;
 #find $WEB/planet -name "planet-*bz2*" -type f -mtime +32 -exec rm -f {} \;
 
