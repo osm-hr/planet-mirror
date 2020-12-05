@@ -8,8 +8,8 @@
 TMP=/osm/planet-mirror/tmp
 # WEB directory where files will be published (your public_html or subfolder)
 WEB=/osm/planet-mirror/web
-# Verbosity: 0=error only, 3=all messages
-VERBOSE=3
+# Verbosity: from 0=errors to 5=debug
+VERBOSE=4
 # Random wait inteval of $WAIT +-50% when before downloading files from planet.openstreetmap.org
 WAIT=1m
 # Delete files older than $MAXDAYS days from your $WEB directory
@@ -73,19 +73,19 @@ get_torrent() {
 
 	if [ -z "$NEWEST_TORRENT" ]
 	then
-		logger 1 "WARNING: No .torrent files found at $URL_BASE, happy new year? (will retry with previous year)"
+		logger 2 "WARNING: No .torrent files found at $URL_BASE, happy new year? (will retry with previous year)"
 		return 1
 	fi
 
 	if fuser -s ${NEWEST_FILE}*
 	then
-		logger 0 "WARNING: another process is using ${NEWEST_FILE}*, skipping download"
+		logger 1 "WARNING: another process is using ${NEWEST_FILE}*, skipping download"
 		return 2
 	fi
 
 	if [ -f "$DEST_DIR${NEWEST_FILE}" ]
 	then
-		logger 3 "INFO: skipping download of already published $DEST_DIR${NEWEST_FILE}"
+		logger 4 "INFO: skipping download of already published $DEST_DIR${NEWEST_FILE}"
 		return 0
 	fi
 
@@ -93,20 +93,25 @@ get_torrent() {
 	if [ ! -f "$NEWEST_TORRENT" -o -f "${NEWEST_FILE}.aria2" ]
 	then
 		# get newest .torrent, and everything contained in it!
+		logger 5 "DEBUG: download/update ${URL_BASE}${NEWEST_TORRENT}"
 		wget $WGET_OPT -N "${URL_BASE}${NEWEST_TORRENT}"
+		logger 5 "DEBUG: aria2 download files from ${URL_BASE}${NEWEST_TORRENT}"
 		aria2c $ARIA2_OPT -x$MAX -s$MAX "${NEWEST_TORRENT}"
 
 		# get newest .md5
 		NEWEST_MD5="${NEWEST_FILE}.md5"
+		logger 5 "DEBUG: download/update MD5 ${URL_BASE}${NEWEST_MD5}"
 		wget $WGET_OPT -N "${URL_BASE}${NEWEST_MD5}"
 
 		# verify MD5
+		logger 5 "DEBUG: verifying MD5 ${NEWEST_MD5}"
 		md5sum --check --quiet "$NEWEST_MD5" || return 3
+		logger 5 "DEBUG: successful MD5 check of ${NEWEST_MD5}, publishing files"
 
 		mv -f $NEWEST_FILE "$DEST_DIR${NEWEST_FILE}.tmp" && mv -f "$DEST_DIR${NEWEST_FILE}.tmp" "$DEST_DIR${NEWEST_FILE}" && \
 		cp -af $NEWEST_TORRENT $DEST_DIR && \
 		mv -f $NEWEST_MD5  $DEST_DIR && \
-		logger 2 "NOTICE: $NEWEST_FILE downloaded OK."
+		logger 3 "NOTICE: $NEWEST_FILE downloaded OK."
 	fi
 	return 0
 }
@@ -115,6 +120,7 @@ get_torrent() {
 # remove files older than $MAXDAYS days
 #
 
+logger 5 "DEBUG: removing files older than $MAXDAYS days"
 find $WEB/pbf -name "planet-*.pbf*" -type f -mtime +$MAXDAYS -exec rm -f {} \;
 find $WEB/planet -name "planet-*.bz2*" -type f -mtime +$MAXDAYS -exec rm -f {} \;
 
@@ -130,3 +136,5 @@ if ! get_torrent "planet/$YEAR/" "index_planet_bz2_${YEAR}.html" 1
 then
 	get_torrent "planet/$YEARLASTWEEK/" "index_planet_bz2_${YEARLASTWEEK}.html" 1
 fi
+
+logger 5 "DEBUG: $0 script finished."
