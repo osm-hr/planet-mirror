@@ -90,8 +90,8 @@ get_torrent() {
 		# verify MD5
 		md5sum --check --quiet "$NEWEST_MD5" || return 3
 
-		cp -af $NEWEST_TORRENT $DEST_DIR && \
 		mv -f $NEWEST_FILE "$DEST_DIR/${NEWEST_FILE}.tmp" && mv -f "$DEST_DIR/${NEWEST_FILE}.tmp" "$DEST_DIR/${NEWEST_FILE}" && \
+		cp -af $NEWEST_TORRENT $DEST_DIR && \
 		mv -f $NEWEST_MD5  $DEST_DIR && \
 		logger 2 "$NEWEST_FILE downloaded OK."
 	fi
