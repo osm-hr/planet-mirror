@@ -9,7 +9,7 @@ TMP=/osm/planet-mirror/tmp
 # WEB directory where files will be published (your public_html or subfolder)
 WEB=/osm/planet-mirror/web
 # Verbosity: 0=error only, 3=all messages
-VERBOSE=2
+VERBOSE=3
 # Random wait inteval of $WAIT +-50% when before downloading files from planet.openstreetmap.org
 WAIT=1m
 # Delete files older than $MAXDAYS days from your $WEB directory
@@ -59,8 +59,13 @@ get_torrent() {
 	HTML=$2
 	MAX=$3
 	URL_BASE=https://planet.openstreetmap.org/$SUBDIR
-	DEST_DIR="${WEB}/${SUBDIR}/"
+	DEST_DIR="${WEB}/${SUBDIR}"
 	test -d "$DEST_DIR" || mkdir "$DEST_DIR"
+	if [ ! -d "${DEST_DIR}." ]
+	then
+		logger 0 "FATAL ERROR: script error: destination subdirectory $DEST_DIR does not end with /"
+		return 33
+	fi
 
 	wget $WGET_OPT -N --no-if-modified-since --default-page $HTML $URL_BASE
 	NEWEST_TORRENT=$(sed -ne 's/^.*href="\([a-z0-9\.\-]*\.torrent\)".*$/\1/p' $HTML | sort -ru | head -n1)
@@ -78,9 +83,9 @@ get_torrent() {
 		return 2
 	fi
 
-	if [ -f "$DEST_DIR/${NEWEST_FILE}" ]
+	if [ -f "$DEST_DIR${NEWEST_FILE}" ]
 	then
-		logger 3 "INFO: skipping download of already published $DEST_DIR/${NEWEST_FILE}"
+		logger 3 "INFO: skipping download of already published $DEST_DIR${NEWEST_FILE}"
 		return 0
 	fi
 
@@ -98,7 +103,7 @@ get_torrent() {
 		# verify MD5
 		md5sum --check --quiet "$NEWEST_MD5" || return 3
 
-		mv -f $NEWEST_FILE "$DEST_DIR/${NEWEST_FILE}.tmp" && mv -f "$DEST_DIR/${NEWEST_FILE}.tmp" "$DEST_DIR/${NEWEST_FILE}" && \
+		mv -f $NEWEST_FILE "$DEST_DIR${NEWEST_FILE}.tmp" && mv -f "$DEST_DIR${NEWEST_FILE}.tmp" "$DEST_DIR${NEWEST_FILE}" && \
 		cp -af $NEWEST_TORRENT $DEST_DIR && \
 		mv -f $NEWEST_MD5  $DEST_DIR && \
 		logger 2 "NOTICE: $NEWEST_FILE downloaded OK."
