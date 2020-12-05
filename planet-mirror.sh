@@ -23,7 +23,7 @@ PREALLOC="none"
 YEAR=$(date +"%Y")
 YEARLASTWEEK=$(date +"%Y" --date='7 days ago')
 WGET_OPT="-q --no-hsts --wait=$WAIT --random-wait"
-ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --quiet"
+ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --quiet --log=aria2.log --log-level=notice"
 
 # log text with timestamp, if user wants us to be that $VERBOSE
 logger() {
@@ -114,6 +114,8 @@ get_torrent() {
 		cp -af $NEWEST_TORRENT $DEST_DIR && \
 		mv -f $NEWEST_MD5  $DEST_DIR && \
 		logger 3 "NOTICE: $NEWEST_FILE downloaded OK."
+
+		mv -f aria2.log aria2.log.old
 	fi
 	return 0
 }
