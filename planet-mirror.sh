@@ -79,7 +79,7 @@ get_torrent() {
 		return 1
 	fi
 
-	if fuser -s ${NEWEST_FILE}*
+	if [ -f "${NEWEST_FILE}" ] && fuser -s ${NEWEST_FILE}*
 	then
 		logger 1 "WARNING: another process is using ${NEWEST_FILE}*, skipping download"
 		return 2
