@@ -67,8 +67,10 @@ get_torrent() {
 		return 33
 	fi
 
+	logger 5 "DEBUG: download/update list of torrents at ${URL_BASE}"
 	wget $WGET_OPT -N --no-if-modified-since --default-page $HTML $URL_BASE
 	NEWEST_TORRENT=$(sed -ne 's/^.*href="\([a-z0-9\.\-]*\.torrent\)".*$/\1/p' $HTML | sort -ru | head -n1)
+	logger 5 "DEBUG: newest torrent determined to be ${NEWEST_TORRENT}"
 	NEWEST_FILE=`basename $NEWEST_TORRENT .torrent`
 
 	if [ -z "$NEWEST_TORRENT" ]
