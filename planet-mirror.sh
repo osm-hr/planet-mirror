@@ -6,16 +6,24 @@
 
 # Note: $TMP must have enough space to hold big files being downloaded (and preferably be on same filesystem as $WEB)
 TMP=/osm/planet-mirror/tmp
+# WEB directory where files will be published (your public_html or subfolder)
 WEB=/osm/planet-mirror/web
+# Verbosity: 0=error only, 3=all messages
 VERBOSE=2
+# Random wait inteval of $WAIT +-50% when before downloading files from planet.openstreetmap.org
 WAIT=1m
+# Delete files older than $MAXDAYS days from your $WEB directory
 MAXDAYS=32
+# Prealloc: "none" (use sparse files, allocates spaces as download goes) or "falloc" (reduces fragmentation, eats disk space and fails immedeately if not enough space)
+PREALLOC="none"
 
+#
 # no user-configurable parts below
+#
 YEAR=$(date +"%Y")
 YEARLASTWEEK=$(date +"%Y" --date='7 days ago')
 WGET_OPT="-q --no-hsts --wait=$WAIT --random-wait"
-ARIA2_OPT="--file-allocation=falloc --follow-torrent=true --quiet"
+ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --quiet"
 
 # log text with timestamp, if user wants us to be that $VERBOSE
 logger() {
@@ -93,7 +101,7 @@ get_torrent() {
 		mv -f $NEWEST_FILE "$DEST_DIR/${NEWEST_FILE}.tmp" && mv -f "$DEST_DIR/${NEWEST_FILE}.tmp" "$DEST_DIR/${NEWEST_FILE}" && \
 		cp -af $NEWEST_TORRENT $DEST_DIR && \
 		mv -f $NEWEST_MD5  $DEST_DIR && \
-		logger 2 "$NEWEST_FILE downloaded OK."
+		logger 2 "NOTICE: $NEWEST_FILE downloaded OK."
 	fi
 	return 0
 }
