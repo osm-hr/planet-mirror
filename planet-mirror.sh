@@ -70,6 +70,12 @@ get_torrent() {
 		return 2
 	fi
 
+	if [ -f "$DEST_DIR/${NEWEST_FILE}" ]
+	then
+		logger 3 "INFO: skipping download of already published $DEST_DIR/${NEWEST_FILE}"
+		return 0
+	fi
+
 	# if newest .torrent is not yet downloaded, or if main transfer was interrupted, try downloading (again)
 	if [ ! -f "$NEWEST_TORRENT" -o -f "${NEWEST_FILE}.aria2" ]
 	then
