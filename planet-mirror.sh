@@ -82,7 +82,7 @@ get_torrent() {
 
 	if [ -z "$NEWEST_TORRENT" ]
 	then
-		logger 2 "WARNING: No .torrent files found at $URL_BASE, happy new year? (will retry with previous year)"
+		logger 2 "WARNING: No .torrent files found at $URL_BASE (if we have just entered new year, we will retry with previous year)"
 		return 1
 	fi
 
@@ -134,7 +134,7 @@ get_torrent_with_year() {
 	# get latest torrent in current $YEAR, but if there are none, fall back to $YEARLASTWEEK
 	if ! get_torrent "$Y_PREFIX" "$Y_EXT" "${Y_SUB}/${YEAR}" $Y_MAX
 	then
-		get_torrent "$Y_PREFIX" "$Y_EXT" "${Y_SUB}/${YEARLASTWEEK}" $Y_MAX
+		[ "$YEAR" != "$YEARLASTWEEK" ] && get_torrent "$Y_PREFIX" "$Y_EXT" "${Y_SUB}/${YEARLASTWEEK}" $Y_MAX
 	fi
 }
 
