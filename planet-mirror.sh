@@ -16,6 +16,8 @@ WAIT=1m
 MAXDAYS=32
 # Prealloc: "none" (use sparse files, allocates spaces as download goes) or "falloc" (reduces fragmentation, eats disk space and fails immedeately if not enough space)
 PREALLOC="none"
+# Aria2 max parallel connections
+PARALLEL=16
 
 #
 # no user-configurable parts below
@@ -24,7 +26,7 @@ YEAR=$(date +"%Y")
 YEARLASTWEEK=$(date +"%Y" --date='7 days ago')
 WGET_OPT="-q --no-hsts --wait=$WAIT --random-wait"
 ARIA2_LOG="aria2.$$.log"
-ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --quiet --log=${ARIA2_LOG} --log-level=notice"
+ARIA2_OPT="x--file-allocation=$PREALLOC --follow-torrent=true --seed-time=0 -s $PARALLEL -j $PARALLEL  --quiet --log=${ARIA2_LOG} --log-level=notice"
 
 # log text with timestamp, if user wants us to be that $VERBOSE
 logger() {
@@ -104,7 +106,7 @@ get_torrent() {
 
 	# download FAST everything contained in .torrent
 	logger 5 "DEBUG: aria2 download files from ${URL_BASE}${NEWEST_TORRENT}"
-	aria2c $ARIA2_OPT -x$MAX -s$MAX "${NEWEST_TORRENT}"
+	aria2c $ARIA2_OPT -x$MAX "${NEWEST_TORRENT}"
 
 	# get newest .md5
 	NEWEST_MD5="${NEWEST_FILE}.md5"
