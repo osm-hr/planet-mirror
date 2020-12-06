@@ -26,7 +26,7 @@ YEAR=$(date +"%Y")
 YEARLASTWEEK=$(date +"%Y" --date='7 days ago')
 WGET_OPT="-q --no-hsts --wait=$WAIT --random-wait"
 ARIA2_LOG="aria2.$$.log"
-ARIA2_OPT="x--file-allocation=$PREALLOC --follow-torrent=true --seed-time=0 -s $PARALLEL -j $PARALLEL  --quiet --log=${ARIA2_LOG} --log-level=notice"
+ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --seed-time=0 -s $PARALLEL -j $PARALLEL  --quiet --log=${ARIA2_LOG} --log-level=notice"
 
 # log text with timestamp, if user wants us to be that $VERBOSE
 logger() {
