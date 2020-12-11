@@ -111,6 +111,7 @@ get_torrent() {
 	# get newest .md5
 	NEWEST_MD5="${NEWEST_FILE}.md5"
 	logger 5 "DEBUG: download/update MD5 ${URL_BASE}${NEWEST_MD5}"
+	rm -f "${NEWEST_MD5}"
 	wget $WGET_OPT -N "${URL_BASE}${NEWEST_MD5}"
 
 	# verify MD5
