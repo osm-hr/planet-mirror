@@ -26,7 +26,7 @@ YEAR=$(date +"%Y")
 YEARLASTWEEK=$(date +"%Y" --date='7 days ago')
 WGET_OPT="-q --no-hsts --wait=$WAIT --random-wait"
 ARIA2_LOG="aria2.$$.log"
-ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --seed-time=0 -s $PARALLEL -j $PARALLEL  --quiet --log=${ARIA2_LOG} --log-level=notice"
+ARIA2_OPT="--file-allocation=$PREALLOC --follow-torrent=true --seed-time=0 --check-certificate=false --enable-dht6=true --server-stat-timeout=600 --bt-stop-timeout=3600 -s $PARALLEL -j $PARALLEL  --quiet --log=${ARIA2_LOG} --log-level=notice"
 
 # log text with timestamp, if user wants us to be that $VERBOSE
 logger() {
@@ -158,9 +158,9 @@ find $WEB/planet -name "discussions-*.bz2*" -type f -mtime +$MAXDAYS -exec rm -f
 #
 
 get_torrent "planet" "pbf" "pbf" 4
-#get_torrent "history" "pbf" "pbf/full-history" 1
+#get_torrent "history" "pbf" "pbf/full-history" 2
 
-get_torrent_with_year "planet" "bz2" "planet" 1
+get_torrent_with_year "planet" "bz2" "planet" 2
 #get_torrent_with_year "changesets" "bz2" "planet" 1
 #get_torrent_with_year "discussions" "bz2" "planet" 1
 #get_torrent_with_year "history" "bz2" "planet/full-history" 1
