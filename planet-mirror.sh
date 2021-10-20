@@ -69,7 +69,7 @@ get_torrent() {
 	URL_BASE=https://planet.openstreetmap.org/$SUBDIR
 	DEST_DIR="${WEB}/${SUBDIR}"
 
-	test -d "$DEST_DIR" || mkdir "$DEST_DIR"
+	test -d "$DEST_DIR" || mkdir -p "$DEST_DIR"
 	if [ ! -d "${DEST_DIR}." ]
 	then
 		logger 0 "FATAL ERROR: script error: destination subdirectory $DEST_DIR does not exist"
